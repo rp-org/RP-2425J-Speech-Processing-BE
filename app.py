@@ -12,9 +12,9 @@ import nltk
 import syllapy
 from nltk.corpus import words
 from metaphone import doublemetaphone
-import dlib
-from model import LipCoordNet
-from inference import load_video, generate_lip_coordinates, ctc_decode
+# import dlib
+# from model import LipCoordNet
+# from inference import load_video, generate_lip_coordinates, ctc_decode
 
 app = FastAPI()
 
@@ -32,15 +32,15 @@ wav2vec_model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-large-960h")
 wav2vec_processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-960h")
 
 # Load the lip-reading model
-device = "cuda" if torch.cuda.is_available() else "cpu"
-lip_model = LipCoordNet()
-lip_model.load_state_dict(torch.load("pretrain/LipCoordNet_coords_loss_0.025581153109669685_wer_0.01746208431890914_cer_0.006488426950253695.pt", map_location=device, weights_only=True))
-lip_model = lip_model.to(device)
-lip_model.eval()
+# device = "cuda" if torch.cuda.is_available() else "cpu"
+# lip_model = LipCoordNet()
+# lip_model.load_state_dict(torch.load("pretrain/LipCoordNet_coords_loss_0.025581153109669685_wer_0.01746208431890914_cer_0.006488426950253695.pt", map_location=device, weights_only=True))
+# lip_model = lip_model.to(device)
+# lip_model.eval()
 
-# Load dlib face detector and shape predictor
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("lip_coordinate_extraction/shape_predictor_68_face_landmarks_GTX.dat")
+# # Load dlib face detector and shape predictor
+# detector = dlib.get_frontal_face_detector()
+# predictor = dlib.shape_predictor("lip_coordinate_extraction/shape_predictor_68_face_landmarks_GTX.dat")
 
 # Download word corpus if not already downloaded
 nltk.download("words")
@@ -166,16 +166,16 @@ async def predict(
     lip_reading_text = None
     lip_reading_accuracy = None
 
-    # If mode is "sentence", use lip-reading model
-    if mode.lower() == "sentence":
-        video_tensor = load_video(video_path, device)
-        coords_tensor = generate_lip_coordinates("samples", detector, predictor)
+    # # If mode is "sentence", use lip-reading model
+    # if mode.lower() == "sentence":
+    #     video_tensor = load_video(video_path, device)
+    #     coords_tensor = generate_lip_coordinates("samples", detector, predictor)
 
-        with torch.no_grad():
-            pred = lip_model(video_tensor[None, ...].to(device), coords_tensor[None, ...].to(device))
+    #     with torch.no_grad():
+    #         pred = lip_model(video_tensor[None, ...].to(device), coords_tensor[None, ...].to(device))
 
-        lip_reading_text = ctc_decode(pred[0])[-1]  # Get final output text
-        lip_reading_accuracy = calculate_accuracy(expected_text, lip_reading_text)
+    #     lip_reading_text = ctc_decode(pred[0])[-1]  # Get final output text
+    #     lip_reading_accuracy = calculate_accuracy(expected_text, lip_reading_text)
 
     # Calculate accuracy for audio models
     whisper_accuracy = calculate_accuracy(expected_text, whisper_text)
