@@ -119,22 +119,6 @@ def extract_wav2vec_text(audio_path):
     wav2vec_text = wav2vec_processor.batch_decode(predicted_ids)
     return wav2vec_text[0]
 
-# Simulate lip-reading accuracy (generate 83% accurate text)
-# def generate_lip_reading_text(whisper_text):
-#     words = whisper_text.split()
-#     num_words_to_modify = int(len(words) * 0.17)  
-
-#     if num_words_to_modify == 0:
-#         return whisper_text  
-
-#     modified_words = words.copy()
-#     for _ in range(num_words_to_modify):
-#         index = random.randint(0, len(words) - 1)
-#         modified_words[index] = modified_words[index][:-1] + random.choice("abcdefghijklmnopqrstuvwxyz")
-
-#     return " ".join(modified_words)
-
-
 
 # Function to calculate accuracy using Levenshtein distance
 def calculate_accuracy(actual_text, predicted_text):
