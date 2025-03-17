@@ -3,7 +3,7 @@ name: "Build and Deploy to Cloud Run"
 on:
   push:
     branches:
-      - "main"
+      - "develop"
 
 env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
