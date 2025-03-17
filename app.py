@@ -3,13 +3,10 @@ import shutil
 import os
 import torch
 import whisper
-import torchaudio
 import Levenshtein
 import librosa
-import random
 from moviepy.editor import VideoFileClip
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
-import tensorflow as tf
 from fastapi.middleware.cors import CORSMiddleware
 import nltk
 import syllapy
@@ -17,7 +14,6 @@ from nltk.corpus import words
 from metaphone import doublemetaphone
 import dlib
 from model import LipCoordNet
-from dataset import MyDataset
 from inference import load_video, generate_lip_coordinates, ctc_decode
 
 app = FastAPI()
