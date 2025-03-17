@@ -1,0 +1,87 @@
+# FastAPI and Web Server
+fastapi==0.115.8
+uvicorn==0.34.0
+starlette==0.45.3
+
+# Machine Learning & Deep Learning
+torch==2.6.0
+torchaudio==2.6.0
+tensorflow==2.18.0
+tensorflow-estimator==2.15.0
+tensorflow-io-gcs-filesystem==0.31.0
+tensorflow_intel==2.18.0
+
+# Whisper for Speech Recognition
+openai-whisper==20240930
+
+# Natural Language Processing
+transformers==4.48.3
+nltk==3.9.1
+textdistance==4.6.3
+syllapy==0.7.2
+regex==2024.11.6
+Levenshtein==0.26.1
+metaphone==0.6
+
+# Audio Processing
+librosa==0.10.2.post1
+numba==0.61.0  # Required for librosa
+soxr==0.5.0.post1
+scipy==1.15.1
+soundfile==0.13.1
+
+# Computer Vision & Image Processing
+opencv-python==4.11.0.86
+imageio==2.37.0
+imageio-ffmpeg==0.6.0
+Pillow==10.4.0
+dlib==19.24.2  
+face-alignment==1.1.1  
+
+# Video Processing
+moviepy==1.0.3
+proglog==0.1.10
+
+# Utility & Performance Libraries
+numpy==1.26.4
+tqdm==4.67.1
+requests==2.32.3
+setuptools==58.1.0
+packaging==24.2
+six==1.17.0
+scikit-learn==1.6.1
+threadpoolctl==3.5.0
+ml-dtypes==0.4.1
+python-dotenv==1.0.1
+pydantic==2.10.6
+typing_extensions==4.12.2
+editdistance==0.6.2
+
+
+# Cryptography & Security
+cryptography
+certifi==2025.1.31
+charset-normalizer==3.4.1
+idna==3.10
+urllib3==2.3.0
+pyasn1==0.6.1
+pyasn1_modules==0.4.1
+rsa==4.9
+oauthlib==3.2.2
+requests-oauthlib==2.0.0
+
+# File Handling & Path Management
+filelock==3.17.0
+platformdirs==4.3.6
+fsspec==2025.2.0
+
+# Text Processing & Markdown
+Markdown==3.7
+rich==13.9.4
+Jinja2==3.1.5
+MarkupSafe==3.0.2
+
+# Extra Dependencies (Optional)
+wrapt==1.14.1
+decorator==4.4.2
+wheel==0.45.1
