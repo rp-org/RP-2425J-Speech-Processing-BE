@@ -2,6 +2,8 @@
 fastapi==0.115.8
 uvicorn==0.34.0
 starlette==0.45.3
+tensorflow
+
 
 # Machine Learning & Deep Learning
 torch==2.6.0

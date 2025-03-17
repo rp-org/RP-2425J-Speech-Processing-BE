@@ -50,6 +50,9 @@ jobs:
           gcloud run deploy ${{ env.GCR_SERVICE }} \
             --image ${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO_NAME }}/${{ env.GAR_IMAGE_NAME }}:${{ github.sha }} \
             --platform managed \
+            --memory 8Gi \
+            --cpu 2 \
+            --timeout=1800s \
             --region ${{ env.GCR_REGION }} \
             --port 8000 \
             --allow-unauthenticated
