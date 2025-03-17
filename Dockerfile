@@ -9,8 +9,19 @@ FROM python:3.10-slim
 # ENV PROJECT_ID=$PROJECT_ID
 # ENV SUBSCRIPTION_NAME=$SUBSCRIPTION_NAME
 
+
 # Set the working directory inside the container
 WORKDIR /app
+
+# Install system dependencies required for dlib
+RUN apt-get update && apt-get install -y \
+    cmake \
+    build-essential \
+    libopenblas-dev \
+    liblapack-dev \
+    libx11-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Copy requirements.txt to the container
 COPY requirements.txt .
