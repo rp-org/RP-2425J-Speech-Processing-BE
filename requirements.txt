@@ -32,7 +32,8 @@ imageio==2.37.0
 imageio-ffmpeg==0.6.0
 Pillow==10.4.0
 dlib==19.24.2  
-face-alignment==1.1.1  
+face-alignment==1.1.1 
+ffmpeg 
 
 # Video Processing
 moviepy==1.0.3
