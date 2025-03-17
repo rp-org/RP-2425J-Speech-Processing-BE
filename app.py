@@ -34,7 +34,7 @@ wav2vec_processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-9
 # Load the lip-reading model
 device = "cuda" if torch.cuda.is_available() else "cpu"
 lip_model = LipCoordNet()
-lip_model.load_state_dict(torch.load("pretrain/LipCoordNet_coords_loss_0.025581153109669685_wer_0.01746208431890914_cer_0.006488426950253695.pt", map_location=device, weights_only=False))
+lip_model.load_state_dict(torch.load("pretrain/LipCoordNet_coords_loss_0.025581153109669685_wer_0.01746208431890914_cer_0.006488426950253695.pt", map_location=device, weights_only=True))
 lip_model = lip_model.to(device)
 lip_model.eval()
 
