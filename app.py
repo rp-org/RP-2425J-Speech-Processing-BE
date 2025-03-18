@@ -166,7 +166,7 @@ async def predict(
     lip_reading_text = None
     lip_reading_accuracy = None
 
-    # # If mode is "sentence", use lip-reading model
+    # # If mode is "sentence", use lip-reading
     if mode.lower() == "sentence":
         video_tensor = load_video(video_path, device)
         coords_tensor = generate_lip_coordinates("samples", detector, predictor)
