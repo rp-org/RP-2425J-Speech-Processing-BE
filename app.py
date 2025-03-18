@@ -158,7 +158,7 @@ async def predict(
     with open(video_path, "wb") as buffer:
         shutil.copyfileobj(video.file, buffer)
 
-    # Process audio and text predictions
+    # Process audio and text predictionss
     audio_path = extract_audio(video_path)
     whisper_text = whisper_transcription(audio_path)
     wav2vec_text = extract_wav2vec_text(audio_path)
