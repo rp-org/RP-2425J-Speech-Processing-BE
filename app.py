@@ -153,7 +153,7 @@ async def predict(
         shutil.rmtree(TEMP_DIR)
     os.makedirs(TEMP_DIR, exist_ok=True)
 
-    # Save new uploaded video
+    # Save new uploaded video r
     video_path = os.path.join(TEMP_DIR, "current_video.mp4")
     with open(video_path, "wb") as buffer:
         shutil.copyfileobj(video.file, buffer)
