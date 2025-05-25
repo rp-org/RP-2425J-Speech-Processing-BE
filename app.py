@@ -197,7 +197,7 @@ async def predict(
 
     # Calculate overall accuracy
     accuracies = [whisper_accuracy, wav2vec_accuracy]
-    if lip_reading_text:  # Include lip-reading accuracy if used
+    if lip_reading_text:  # Include lip-reading accuracy when used
         accuracies.append(lip_reading_accuracy)
 
     overall_accuracy = sum(accuracies) / len(accuracies)
