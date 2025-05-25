@@ -31,6 +31,20 @@ whisper_model = whisper.load_model("base")
 wav2vec_model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-large-960h")
 wav2vec_processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-960h")
 
+os.environ['TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD'] = '1'
+
+# Save the original torch.load function
+_original_torch_load = torch.load
+
+# Define a new function that forces weights_only=False
+def custom_torch_load(*args, **kwargs):
+    if "weights_only" not in kwargs:
+        kwargs["weights_only"] = False
+    return _original_torch_load(*args, **kwargs)
+
+# Override torch.load globally
+torch.load = custom_torch_load
+
 #  lip-reading model
 device = "cuda" if torch.cuda.is_available() else "cpu"
 lip_model = LipCoordNet()
@@ -189,6 +203,11 @@ async def predict(
     overall_accuracy = sum(accuracies) / len(accuracies)
 
     feedback = "Excellent performance!" if overall_accuracy > 85 else "Good job! Keep improving!" if overall_accuracy > 70 else "Needs more practice!"
+    
+    # Fetch similar words if accuracy is low
+    suggested_words = []
+    if overall_accuracy < 70:
+        suggested_words = suggest_similar_words(expected_text)
 
     return {
         "expected_text": expected_text,
@@ -200,6 +219,7 @@ async def predict(
         "lip_reading_text": lip_reading_text if lip_reading_text else wav2vec_text,
         "lip_reading_accuracy": lip_reading_accuracy if lip_reading_text else wav2vec_accuracy,
         "overall_accuracy": overall_accuracy,
-        "feedback": feedback
+        "feedback": feedback,
+         **({"similar_words": suggested_words} if overall_accuracy < 70 else {})  # Add only if accuracy < 70
     }
    

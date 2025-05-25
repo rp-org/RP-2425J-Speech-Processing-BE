@@ -1,0 +1,49 @@
+name: Deploy to GCP VM
+
+on:
+  workflow_call:
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      VM_USER:
+        required: true
+      VM_HOST:
+        required: true
+    inputs:
+      target_directory:
+        required: true
+        type: string
+      branch:
+        required: false
+        default: develop
+        type: string
+      service_name:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to GCP VM
+        run: |
+          ssh -t -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << EOF
+            cd ${{ inputs.target_directory }}
+            git reset --hard HEAD
+            git clean -fd
+            git pull origin ${{ inputs.branch }}
+            sudo systemctl daemon-reload
+            sudo systemctl restart ${{ inputs.service_name }}
+            sudo systemctl status ${{ inputs.service_name }} --no-pager
+            journalctl -u ${{ inputs.service_name }} -n 10 --no-pager
+            echo "🚀 ${{ inputs.service_name }} restarted successfully!"
+          EOF

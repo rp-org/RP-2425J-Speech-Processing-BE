@@ -1,0 +1,42 @@
+name: "CI CD Workflow"
+
+on:
+  push:
+    branches: [develop]
+
+permissions:
+  contents: write
+  id-token: write
+  security-events: write
+
+jobs:
+  sonar:
+    uses: ./.github/workflows/sonarqube-analysis.yaml
+    with:
+      context_path: "."
+      sonar_sources: "."
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      ORG_SONAR: ${{ secrets.ORG_SONAR }}
+      PROJECT_KEY_SONAR: ${{ secrets.PROJECT_KEY_SONAR }}
+
+  snyk-scan:
+    uses: ./.github/workflows/snyk-scan.yaml
+    needs: sonar
+    with:
+      context_path: .
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  deploy-to-vm:
+    needs: snyk-scan
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      target_directory: "/home/MUmaira/RP-2425J-Speech-Processing-BE"
+      branch: "develop"
+      service_name: "test-sp-app.service"
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      VM_USER: ${{ secrets.VM_USER }}
+      VM_HOST: ${{ secrets.VM_HOST }}
