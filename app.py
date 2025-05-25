@@ -204,7 +204,7 @@ async def predict(
 
     feedback = "Excellent performance!" if overall_accuracy > 85 else "Good job! Keep improving!" if overall_accuracy > 70 else "Needs more practice!"
     
-    # Fetch similar words if accuracy is low
+    # Fetching similar words if accuracy is low
     suggested_words = []
     if overall_accuracy < 70:
         suggested_words = suggest_similar_words(expected_text)
