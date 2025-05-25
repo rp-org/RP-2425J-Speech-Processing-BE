@@ -1,0 +1,63 @@
+name: Snyk Scanning
+
+on:
+  workflow_call:
+    inputs:
+      context_path:
+        required: true
+        type: string
+      install_dependencies:
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      SNYK_TOKEN:
+        required: true
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Optional - Install Dependencies
+        if: ${{ inputs.install_dependencies }}
+        run: |
+          cd ${{ inputs.context_path }}
+
+          if [ -f "package.json" ]; then
+            echo "Node.js project detected. Installing dependencies with npm."
+            npm install
+          elif [ -f "requirements.txt" ]; then
+            echo "Python project detected. Installing dependencies with pip."
+            pip install -r requirements.txt
+          elif [ -f "pom.xml" ]; then
+            echo "Java project detected. Installing dependencies with Maven."
+            mvn install
+          else
+            echo "No known project type. Skipping dependency installation."
+          fi
+
+      - name: Set up Snyk
+        uses: snyk/actions/setup@master
+        with:
+          version: "latest"
+
+      - name: Authenticate Snyk CLI
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk test (Code + Dependencies Scan)
+        run: |
+          cd ${{ inputs.context_path }}
+          snyk test --file=requirements.txt --org=e1733ff7-835f-4fa8-9bd2-1cdc6be250d5 --skip-unresolved
+        continue-on-error: true
+
+      - name: Run Snyk Monitoring
+        run: |
+          cd ${{ inputs.context_path }}
+          snyk monitor --file=requirements.txt --org=e1733ff7-835f-4fa8-9bd2-1cdc6be250d5 --skip-unresolved
+        continue-on-error: true

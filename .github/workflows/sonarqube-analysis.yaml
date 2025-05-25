@@ -1,0 +1,75 @@
+name: CI with SonarQube
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+      SONAR_HOST_URL:
+        required: true
+      PROJECT_KEY_SONAR:
+        required: true
+      ORG_SONAR:
+        required: true
+
+    inputs:
+      context_path:
+        required: true
+        type: string
+      sonar_sources:
+        required: false
+        type: string
+      install_dependencies:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  sonarqube-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Optional - Install Dependencies
+        if: ${{ inputs.install_dependencies }}
+        run: |
+          cd ${{ inputs.context_path }}
+
+          if [ -f "package.json" ]; then
+            echo "Node.js project detected. Installing dependencies with npm."
+            npm install
+          elif [ -f "requirements.txt" ]; then
+            echo "Python project detected. Installing dependencies with pip."
+            pip install -r requirements.txt
+          elif [ -f "pom.xml" ]; then
+            echo "Java project detected. Installing dependencies with Maven."
+            mvn install
+          else
+            echo "No known project type. Skipping dependency installation."
+          fi
+
+      # Step : Run SonarQube analysis
+      - name: Run SonarQube analysis
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
+          SONAR_HOST_URL: "${{ secrets.SONAR_HOST_URL }}"
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.PROJECT_KEY_SONAR }}
+            -Dsonar.organization=${{ secrets.ORG_SONAR }}
+            -Dsonar.sources=${{ inputs.sonar_sources }}
+
+      # Check the Quality Gate status.
+      - name: SonarQube Server Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          pollingTimeoutSec: 600
+        env:
+          SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
+          SONAR_HOST_URL: "${{ secrets.SONAR_HOST_URL }}"
+        continue-on-error: true
